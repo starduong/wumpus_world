@@ -1,0 +1,933 @@
+Initializing started...
+Let the game begin!
+
+
+
+New Round: I am at [1,1] and I have visited []
+make_percept_sentence... _5756,_5762,_5768 
+smelly=no 
+Stench... no 
+I'm in [1,1], seeing: [no,no,no]
+update_KB [no,no,no]
+add_wumpus_KB no
+Not visited before= [1,1]
+KB learn [1,2] - no Wumpus there!
+[1,0] is not permitted
+KB learn [2,1] - no Wumpus there!
+[0,1] is not permitted
+add_pit_KB no
+Not visited before= [1,1]
+KB learn [1,2] - there is no Pit there!
+[1,0] is not permitted
+KB learn [2,1] - there is no Pit there!
+[0,1] is not permitted
+add_gold_KB no
+KB learn [1,1] - there is no gold here!
+add_ok_KB no,no
+Not visited before= [1,1]
+add_ok_KB_item [1,2]
+assume_ok(no,no,L) [1,2]
+KB learn [1,2] is OK
+add_ok_KB_item [1,0]
+[1,0] is not permitted
+add_ok_KB_item [2,1]
+assume_ok(no,no,L) [2,1]
+KB learn [2,1] is OK
+add_ok_KB_item [0,1]
+[0,1] is not permitted
+Maybe Wumpus locations: []
+ask_KB VisitedList=[[1,1]] - Action=_6600
+make_percept_sentence... _6646,_6652,_6658 
+smelly=no 
+Stench... no 
+agent_location=[1,1], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - L was not visited before= [1,2]
+preferred_move - Let's see if [2,1] is OK
+preferred_move - L was not visited before= [2,1]
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [2,1] is OK
+Available moves: [[yes,[1,2]],[yes,[2,1]],[no,[1,1]],[no,[1,2]],[no,[2,1]]]
+Choosing safe visited cell (short history) [1,2]
+Selected move to [1,2]
+Action=[1,2] is adjacent to AL=[1,1]
+I'm going to: [1,2]
+New Agent Location: [1,2]
+New time: 1
+New score: -1
+VisitedList = [[1,1]]
+Checking standing: AL=[1,2], WL=[1,3], WS=alive, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [1,2] and I have visited [[1,1]]
+make_percept_sentence... _2656,_2662,_2668 
+smelly=yes 
+Stench... yes 
+I'm in [1,2], seeing: [yes,no,no]
+update_KB [yes,no,no]
+add_wumpus_KB yes
+Not visited before= [1,2]
+KB learn [1,3] - is it a Wumpus?
+KB learn [1,3] - maybe there is a Wumpus!
+KB learn [1,1] - is it a Wumpus?
+I know there is no Wumpus at [1,1]!
+KB learn [2,2] - is it a Wumpus?
+KB learn [2,2] - maybe there is a Wumpus!
+[0,2] is not permitted
+add_pit_KB no
+Not visited before= [1,2]
+KB learn [1,3] - there is no Pit there!
+KB learn [1,1] - there is no Pit there!
+KB learn [2,2] - there is no Pit there!
+[0,2] is not permitted
+add_gold_KB no
+KB learn [1,2] - there is no gold here!
+add_ok_KB yes,no
+Not visited before= [1,2]
+add_ok_KB_item [1,3]
+assume_ok(maybe,no,L) [1,3]
+KB learn [1,3] is NOT OK
+add_ok_KB_item [1,1]
+assume_ok(no,no,L) [1,1]
+KB learn [1,1] is OK
+add_ok_KB_item [2,2]
+assume_ok(maybe,no,L) [2,2]
+KB learn [2,2] is NOT OK
+add_ok_KB_item [0,2]
+[0,2] is not permitted
+Maybe Wumpus locations: [[1,3],[2,2]]
+ask_KB VisitedList=[[1,2],[1,1]] - Action=_3730
+make_percept_sentence... _3776,_3782,_3788 
+smelly=yes 
+Stench... yes 
+agent_location=[1,2], Glitter=no
+preferred_move - Let's see if [2,1] is OK
+preferred_move - L was not visited before= [2,1]
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,1] is OK
+Available moves: [[yes,[2,1]],[no,[2,1]],[no,[1,2]],[no,[1,1]]]
+Choosing safe visited cell (least visited) [1,1]
+Selected move to [1,1]
+Action=[1,1] is adjacent to AL=[1,2]
+I'm going to: [1,1]
+New Agent Location: [1,1]
+New time: 2
+New score: -2
+VisitedList = [[1,2],[1,1]]
+Checking standing: AL=[1,1], WL=[1,3], WS=alive, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [1,1] and I have visited [[1,2],[1,1]]
+make_percept_sentence... _4526,_4532,_4538 
+smelly=no 
+Stench... no 
+I'm in [1,1], seeing: [no,no,no]
+update_KB [no,no,no]
+add_wumpus_KB no
+Already visited before= [1,1]
+add_pit_KB no
+Already visited before= [1,1]
+add_gold_KB no
+KB learn [1,1] - there is no gold here!
+add_ok_KB no,no
+Already visited before= [1,1]
+Maybe Wumpus locations: [[1,3],[2,2]]
+ask_KB VisitedList=[[1,1],[1,2],[1,1]] - Action=_4906
+make_percept_sentence... _4952,_4958,_4964 
+smelly=no 
+Stench... no 
+agent_location=[1,1], Glitter=no
+preferred_move - Let's see if [2,1] is OK
+preferred_move - L was not visited before= [2,1]
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,1] is OK
+Available moves: [[yes,[2,1]],[no,[2,1]],[no,[1,2]],[no,[1,1]]]
+Choosing safe cell (no better options) [2,1]
+Selected move to [2,1]
+Action=[2,1] is adjacent to AL=[1,1]
+I'm going to: [2,1]
+New Agent Location: [2,1]
+New time: 3
+New score: -3
+VisitedList = [[1,1],[1,2],[1,1]]
+Checking standing: AL=[2,1], WL=[1,3], WS=alive, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [2,1] and I have visited [[1,1],[1,2],[1,1]]
+make_percept_sentence... _5614,_5620,_5626 
+smelly=no 
+Stench... no 
+I'm in [2,1], seeing: [no,yes,no]
+update_KB [no,yes,no]
+add_wumpus_KB no
+Not visited before= [2,1]
+KB learn [2,2] - no Wumpus there!
+[2,0] is not permitted
+KB learn [3,1] - no Wumpus there!
+KB learn [1,1] - no Wumpus there!
+add_pit_KB yes
+Not visited before= [2,1]
+KB learn [2,2] - is it a Pit?
+I know there is no Pit at [2,2]!
+[2,0] is not permitted
+KB learn [3,1] - is it a Pit?
+KB learn [3,1] - maybe there is a Pit!
+KB learn [1,1] - is it a Pit?
+I know there is no Pit at [1,1]!
+add_gold_KB no
+KB learn [2,1] - there is no gold here!
+add_ok_KB no,yes
+Not visited before= [2,1]
+add_ok_KB_item [2,2]
+assume_ok(no,no,L) [2,2]
+KB learn [2,2] is OK
+add_ok_KB_item [2,0]
+[2,0] is not permitted
+add_ok_KB_item [3,1]
+assume_ok(no,maybe,L) [3,1]
+KB learn [3,1] is NOT OK
+add_ok_KB_item [1,1]
+assume_ok(no,no,L) [1,1]
+KB learn [1,1] is OK
+Maybe Wumpus locations: [[1,3]]
+KB learn Wumpus is definitely at [1,3]
+ask_KB VisitedList=[[2,1],[1,1],[1,2],[1,1]] - Action=_6758
+make_percept_sentence... _6804,_6810,_6816 
+smelly=no 
+Stench... no 
+agent_location=[2,1], Glitter=no
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - L was not visited before= [2,2]
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,1] is OK
+Available moves: [[yes,[2,2]],[no,[1,2]],[no,[2,1]],[no,[2,2]],[no,[1,1]]]
+Choosing safe cell (no better options) [2,2]
+Selected move to [2,2]
+Action=[2,2] is adjacent to AL=[2,1]
+I'm going to: [2,2]
+New Agent Location: [2,2]
+New time: 4
+New score: -4
+VisitedList = [[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[2,2], WL=[1,3], WS=alive, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [2,2] and I have visited [[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _7550,_7556,_7562 
+smelly=no 
+Stench... no 
+I'm in [2,2], seeing: [no,no,no]
+update_KB [no,no,no]
+add_wumpus_KB no
+Not visited before= [2,2]
+KB learn [2,3] - no Wumpus there!
+KB learn [2,1] - no Wumpus there!
+KB learn [3,2] - no Wumpus there!
+KB learn [1,2] - no Wumpus there!
+add_pit_KB no
+Not visited before= [2,2]
+KB learn [2,3] - there is no Pit there!
+KB learn [2,1] - there is no Pit there!
+KB learn [3,2] - there is no Pit there!
+KB learn [1,2] - there is no Pit there!
+add_gold_KB no
+KB learn [2,2] - there is no gold here!
+add_ok_KB no,no
+Not visited before= [2,2]
+add_ok_KB_item [2,3]
+assume_ok(no,no,L) [2,3]
+KB learn [2,3] is OK
+add_ok_KB_item [2,1]
+assume_ok(no,no,L) [2,1]
+KB learn [2,1] is OK
+add_ok_KB_item [3,2]
+assume_ok(no,no,L) [3,2]
+KB learn [3,2] is OK
+add_ok_KB_item [1,2]
+assume_ok(no,no,L) [1,2]
+KB learn [1,2] is OK
+Maybe Wumpus locations: [[1,3]]
+KB learn Wumpus is definitely at [1,3]
+ask_KB VisitedList=[[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_8794
+make_percept_sentence... _8840,_8846,_8852 
+smelly=no 
+Stench... no 
+agent_location=[2,2], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - L was not visited before= [2,3]
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - L was not visited before= [3,2]
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - Let's see if [1,2] is OK
+Available moves: [[yes,[2,3]],[yes,[3,2]],[no,[1,1]],[no,[2,2]],[no,[2,3]],[no,[2,1]],[no,[3,2]],[no,[1,2]]]
+Choosing safe cell (no better options) [2,3]
+Selected move to [2,3]
+Action=[2,3] is adjacent to AL=[2,2]
+I'm going to: [2,3]
+New Agent Location: [2,3]
+New time: 5
+New score: -5
+VisitedList = [[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[2,3], WL=[1,3], WS=alive, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [2,3] and I have visited [[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _9622,_9628,_9634 
+smelly=yes 
+Stench... yes 
+I'm in [2,3], seeing: [yes,yes,no]
+update_KB [yes,yes,no]
+add_wumpus_KB yes
+Not visited before= [2,3]
+KB learn [2,4] - is it a Wumpus?
+KB learn [2,4] - maybe there is a Wumpus!
+KB learn [2,2] - is it a Wumpus?
+I know there is no Wumpus at [2,2]!
+KB learn [3,3] - is it a Wumpus?
+KB learn [3,3] - maybe there is a Wumpus!
+KB learn [1,3] - is it a Wumpus?
+KB learn [1,3] - maybe there is a Wumpus!
+add_pit_KB yes
+Not visited before= [2,3]
+KB learn [2,4] - is it a Pit?
+KB learn [2,4] - maybe there is a Pit!
+KB learn [2,2] - is it a Pit?
+I know there is no Pit at [2,2]!
+KB learn [3,3] - is it a Pit?
+KB learn [3,3] - maybe there is a Pit!
+KB learn [1,3] - is it a Pit?
+I know there is no Pit at [1,3]!
+add_gold_KB no
+KB learn [2,3] - there is no gold here!
+add_ok_KB yes,yes
+Not visited before= [2,3]
+add_ok_KB_item [2,4]
+assume_ok(maybe,maybe,L) [2,4]
+KB learn [2,4] is NOT OK
+add_ok_KB_item [2,2]
+assume_ok(no,no,L) [2,2]
+KB learn [2,2] is OK
+add_ok_KB_item [3,3]
+assume_ok(maybe,maybe,L) [3,3]
+KB learn [3,3] is NOT OK
+add_ok_KB_item [1,3]
+assume_ok(maybe,no,L) [1,3]
+KB learn [1,3] is NOT OK
+Maybe Wumpus locations: [[2,4],[3,3],[1,3]]
+ask_KB VisitedList=[[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_11030
+make_percept_sentence... _11076,_11082,_11088 
+smelly=yes 
+Stench... yes 
+agent_location=[2,3], Glitter=no
+I know the Wumpus is at [1,3] and I'm adjacent!
+I shoot an arrow at [1,3]!
+Wumpus at [1,3] is killed!
+KB learn [1,3] is now OK
+New score: -15
+New time: 6
+New score: -16
+VisitedList = [[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[2,3], WL=[1,3], WS=dead, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [2,3] and I have visited [[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _11676,_11682,_11688 
+smelly=no 
+Stench... no 
+I'm in [2,3], seeing: [no,yes,no]
+update_KB [no,yes,no]
+add_wumpus_KB no
+Already visited before= [2,3]
+add_pit_KB yes
+Already visited before= [2,3]
+add_gold_KB no
+KB learn [2,3] - there is no gold here!
+add_ok_KB no,yes
+Already visited before= [2,3]
+Maybe Wumpus locations: [[2,4],[3,3]]
+ask_KB VisitedList=[[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_12110
+make_percept_sentence... _12156,_12162,_12168 
+smelly=no 
+Stench... no 
+agent_location=[2,3], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - L was not visited before= [3,2]
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - L was not visited before= [1,3]
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [2,3] is OK
+Available moves: [[yes,[3,2]],[yes,[1,3]],[no,[1,1]],[no,[2,1]],[no,[3,2]],[no,[1,2]],[no,[2,2]],[no,[1,3]],[no,[2,3]]]
+Choosing safe cell (no better options) [1,3]
+Selected move to [1,3]
+Action=[1,3] is adjacent to AL=[2,3]
+I'm going to: [1,3]
+New Agent Location: [1,3]
+New time: 7
+New score: -17
+VisitedList = [[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[1,3], WL=[1,3], WS=dead, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [1,3] and I have visited [[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _13022,_13028,_13034 
+smelly=no 
+Stench... no 
+I'm in [1,3], seeing: [no,no,no]
+update_KB [no,no,no]
+add_wumpus_KB no
+Not visited before= [1,3]
+KB learn [1,4] - no Wumpus there!
+KB learn [1,2] - no Wumpus there!
+KB learn [2,3] - no Wumpus there!
+[0,3] is not permitted
+add_pit_KB no
+Not visited before= [1,3]
+KB learn [1,4] - there is no Pit there!
+KB learn [1,2] - there is no Pit there!
+KB learn [2,3] - there is no Pit there!
+[0,3] is not permitted
+add_gold_KB no
+KB learn [1,3] - there is no gold here!
+add_ok_KB no,no
+Not visited before= [1,3]
+add_ok_KB_item [1,4]
+assume_ok(no,no,L) [1,4]
+KB learn [1,4] is OK
+add_ok_KB_item [1,2]
+assume_ok(no,no,L) [1,2]
+KB learn [1,2] is OK
+add_ok_KB_item [2,3]
+assume_ok(no,no,L) [2,3]
+KB learn [2,3] is OK
+add_ok_KB_item [0,3]
+[0,3] is not permitted
+Maybe Wumpus locations: [[2,4],[3,3]]
+ask_KB VisitedList=[[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_14266
+make_percept_sentence... _14312,_14318,_14324 
+smelly=no 
+Stench... no 
+agent_location=[1,3], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - L was not visited before= [3,2]
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - L was not visited before= [1,4]
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [2,3] is OK
+Available moves: [[yes,[3,2]],[yes,[1,4]],[no,[1,1]],[no,[2,1]],[no,[3,2]],[no,[2,2]],[no,[1,3]],[no,[1,4]],[no,[1,2]],[no,[2,3]]]
+Choosing safe cell (no better options) [1,4]
+Selected move to [1,4]
+Action=[1,4] is adjacent to AL=[1,3]
+I'm going to: [1,4]
+New Agent Location: [1,4]
+New time: 8
+New score: -18
+VisitedList = [[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[1,4], WL=[1,3], WS=dead, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [1,4] and I have visited [[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _15154,_15160,_15166 
+smelly=no 
+Stench... no 
+I'm in [1,4], seeing: [no,no,no]
+update_KB [no,no,no]
+add_wumpus_KB no
+Not visited before= [1,4]
+[1,5] is not permitted
+KB learn [1,3] - no Wumpus there!
+KB learn [2,4] - no Wumpus there!
+[0,4] is not permitted
+add_pit_KB no
+Not visited before= [1,4]
+[1,5] is not permitted
+KB learn [1,3] - there is no Pit there!
+KB learn [2,4] - there is no Pit there!
+[0,4] is not permitted
+add_gold_KB no
+KB learn [1,4] - there is no gold here!
+add_ok_KB no,no
+Not visited before= [1,4]
+add_ok_KB_item [1,5]
+[1,5] is not permitted
+add_ok_KB_item [1,3]
+assume_ok(no,no,L) [1,3]
+KB learn [1,3] is OK
+add_ok_KB_item [2,4]
+assume_ok(no,no,L) [2,4]
+KB learn [2,4] is OK
+add_ok_KB_item [0,4]
+[0,4] is not permitted
+Maybe Wumpus locations: [[3,3]]
+KB learn Wumpus is definitely at [3,3]
+ask_KB VisitedList=[[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_1864
+make_percept_sentence... _1910,_1916,_1922 
+smelly=no 
+Stench... no 
+agent_location=[1,4], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - L was not visited before= [3,2]
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [2,4] is OK
+preferred_move - L was not visited before= [2,4]
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [2,4] is OK
+Available moves: [[yes,[3,2]],[yes,[2,4]],[no,[1,1]],[no,[2,1]],[no,[3,2]],[no,[2,2]],[no,[1,2]],[no,[2,3]],[no,[1,4]],[no,[1,3]],[no,[2,4]]]
+Choosing safe cell (no better options) [2,4]
+Selected move to [2,4]
+Action=[2,4] is adjacent to AL=[1,4]
+I'm going to: [2,4]
+New Agent Location: [2,4]
+New time: 9
+New score: -19
+VisitedList = [[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[2,4], WL=[1,3], WS=dead, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [2,4] and I have visited [[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _2782,_2788,_2794 
+smelly=no 
+Stench... no 
+I'm in [2,4], seeing: [no,no,no]
+update_KB [no,no,no]
+add_wumpus_KB no
+Not visited before= [2,4]
+[2,5] is not permitted
+KB learn [2,3] - no Wumpus there!
+KB learn [3,4] - no Wumpus there!
+KB learn [1,4] - no Wumpus there!
+add_pit_KB no
+Not visited before= [2,4]
+[2,5] is not permitted
+KB learn [2,3] - there is no Pit there!
+KB learn [3,4] - there is no Pit there!
+KB learn [1,4] - there is no Pit there!
+add_gold_KB no
+KB learn [2,4] - there is no gold here!
+add_ok_KB no,no
+Not visited before= [2,4]
+add_ok_KB_item [2,5]
+[2,5] is not permitted
+add_ok_KB_item [2,3]
+assume_ok(no,no,L) [2,3]
+KB learn [2,3] is OK
+add_ok_KB_item [3,4]
+assume_ok(no,no,L) [3,4]
+KB learn [3,4] is OK
+add_ok_KB_item [1,4]
+assume_ok(no,no,L) [1,4]
+KB learn [1,4] is OK
+Maybe Wumpus locations: [[3,3]]
+KB learn Wumpus is definitely at [3,3]
+ask_KB VisitedList=[[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_4094
+make_percept_sentence... _4140,_4146,_4152 
+smelly=no 
+Stench... no 
+agent_location=[2,4], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - L was not visited before= [3,2]
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [2,4] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - L was not visited before= [3,4]
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [2,4] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - Let's see if [1,4] is OK
+Available moves: [[yes,[3,2]],[yes,[3,4]],[no,[1,1]],[no,[2,1]],[no,[3,2]],[no,[2,2]],[no,[1,2]],[no,[1,3]],[no,[2,4]],[no,[2,3]],[no,[3,4]],[no,[1,4]]]
+Choosing safe cell (no better options) [3,4]
+Selected move to [3,4]
+Action=[3,4] is adjacent to AL=[2,4]
+I'm going to: [3,4]
+New Agent Location: [3,4]
+New time: 10
+New score: -20
+VisitedList = [[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[3,4], WL=[1,3], WS=dead, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [3,4] and I have visited [[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _5042,_5048,_5054 
+smelly=no 
+Stench... no 
+I'm in [3,4], seeing: [no,yes,no]
+update_KB [no,yes,no]
+add_wumpus_KB no
+Not visited before= [3,4]
+[3,5] is not permitted
+KB learn [3,3] - no Wumpus there!
+KB learn [4,4] - no Wumpus there!
+KB learn [2,4] - no Wumpus there!
+add_pit_KB yes
+Not visited before= [3,4]
+[3,5] is not permitted
+KB learn [3,3] - is it a Pit?
+KB learn [3,3] - maybe there is a Pit!
+KB learn [4,4] - is it a Pit?
+KB learn [4,4] - maybe there is a Pit!
+KB learn [2,4] - is it a Pit?
+I know there is no Pit at [2,4]!
+add_gold_KB no
+KB learn [3,4] - there is no gold here!
+add_ok_KB no,yes
+Not visited before= [3,4]
+add_ok_KB_item [3,5]
+[3,5] is not permitted
+add_ok_KB_item [3,3]
+assume_ok(no,maybe,L) [3,3]
+KB learn [3,3] is NOT OK
+add_ok_KB_item [4,4]
+assume_ok(no,maybe,L) [4,4]
+KB learn [4,4] is NOT OK
+add_ok_KB_item [2,4]
+assume_ok(no,no,L) [2,4]
+KB learn [2,4] is OK
+Maybe Wumpus locations: []
+ask_KB VisitedList=[[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_6418
+make_percept_sentence... _6464,_6470,_6476 
+smelly=no 
+Stench... no 
+agent_location=[3,4], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - L was not visited before= [3,2]
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - Let's see if [2,4] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - Let's see if [2,4] is OK
+Available moves: [[yes,[3,2]],[no,[1,1]],[no,[2,1]],[no,[3,2]],[no,[2,2]],[no,[1,2]],[no,[1,3]],[no,[2,3]],[no,[1,4]],[no,[3,4]],[no,[2,4]]]
+Choosing safe cell (no better options) [2,4]
+Selected move to [2,4]
+Action=[2,4] is adjacent to AL=[3,4]
+I'm going to: [2,4]
+New Agent Location: [2,4]
+New time: 11
+New score: -21
+VisitedList = [[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[2,4], WL=[1,3], WS=dead, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [2,4] and I have visited [[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _7390,_7396,_7402 
+smelly=no 
+Stench... no 
+I'm in [2,4], seeing: [no,no,no]
+update_KB [no,no,no]
+add_wumpus_KB no
+Already visited before= [2,4]
+add_pit_KB no
+Already visited before= [2,4]
+add_gold_KB no
+KB learn [2,4] - there is no gold here!
+add_ok_KB no,no
+Already visited before= [2,4]
+Maybe Wumpus locations: []
+ask_KB VisitedList=[[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_7734
+make_percept_sentence... _7780,_7786,_7792 
+smelly=no 
+Stench... no 
+agent_location=[2,4], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - L was not visited before= [3,2]
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - Let's see if [2,4] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - Let's see if [2,4] is OK
+Available moves: [[yes,[3,2]],[no,[1,1]],[no,[2,1]],[no,[3,2]],[no,[2,2]],[no,[1,2]],[no,[1,3]],[no,[2,3]],[no,[1,4]],[no,[3,4]],[no,[2,4]]]
+Choosing safe cell (no better options) [2,3]
+Selected move to [2,3]
+Action=[2,3] is adjacent to AL=[2,4]
+I'm going to: [2,3]
+New Agent Location: [2,3]
+New time: 12
+New score: -22
+VisitedList = [[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[2,3], WL=[1,3], WS=dead, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [2,3] and I have visited [[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _8652,_8658,_8664 
+smelly=no 
+Stench... no 
+I'm in [2,3], seeing: [no,yes,no]
+update_KB [no,yes,no]
+add_wumpus_KB no
+Already visited before= [2,3]
+add_pit_KB yes
+Already visited before= [2,3]
+add_gold_KB no
+KB learn [2,3] - there is no gold here!
+add_ok_KB no,yes
+Already visited before= [2,3]
+Maybe Wumpus locations: []
+ask_KB VisitedList=[[2,3],[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_9050
+make_percept_sentence... _9096,_9102,_9108 
+smelly=no 
+Stench... no 
+agent_location=[2,3], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - L was not visited before= [3,2]
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - Let's see if [2,4] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - Let's see if [2,4] is OK
+preferred_move - Let's see if [2,3] is OK
+Available moves: [[yes,[3,2]],[no,[1,1]],[no,[2,1]],[no,[3,2]],[no,[2,2]],[no,[1,2]],[no,[1,3]],[no,[1,4]],[no,[3,4]],[no,[2,4]],[no,[2,3]]]
+Choosing safe cell (no better options) [2,2]
+Selected move to [2,2]
+Action=[2,2] is adjacent to AL=[2,3]
+I'm going to: [2,2]
+New Agent Location: [2,2]
+New time: 13
+New score: -23
+VisitedList = [[2,3],[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[2,2], WL=[1,3], WS=dead, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [2,2] and I have visited [[2,3],[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _10022,_10028,_10034 
+smelly=no 
+Stench... no 
+I'm in [2,2], seeing: [no,no,no]
+update_KB [no,no,no]
+add_wumpus_KB no
+Already visited before= [2,2]
+add_pit_KB no
+Already visited before= [2,2]
+add_gold_KB no
+KB learn [2,2] - there is no gold here!
+add_ok_KB no,no
+Already visited before= [2,2]
+Maybe Wumpus locations: []
+ask_KB VisitedList=[[2,2],[2,3],[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_10366
+make_percept_sentence... _10412,_10418,_10424 
+smelly=no 
+Stench... no 
+agent_location=[2,2], Glitter=no
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - L was not visited before= [3,2]
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - Let's see if [2,4] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [2,2] is OK
+preferred_move - Let's see if [1,1] is OK
+preferred_move - Let's see if [2,1] is OK
+preferred_move - Let's see if [3,2] is OK
+preferred_move - Let's see if [1,2] is OK
+preferred_move - Let's see if [1,3] is OK
+preferred_move - Let's see if [1,4] is OK
+preferred_move - Let's see if [3,4] is OK
+preferred_move - Let's see if [2,4] is OK
+preferred_move - Let's see if [2,3] is OK
+preferred_move - Let's see if [2,2] is OK
+Available moves: [[yes,[3,2]],[no,[1,1]],[no,[2,1]],[no,[3,2]],[no,[1,2]],[no,[1,3]],[no,[1,4]],[no,[3,4]],[no,[2,4]],[no,[2,3]],[no,[2,2]]]
+Choosing safe cell (no better options) [3,2]
+Selected move to [3,2]
+Action=[3,2] is adjacent to AL=[2,2]
+I'm going to: [3,2]
+New Agent Location: [3,2]
+New time: 14
+New score: -24
+VisitedList = [[2,2],[2,3],[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+Checking standing: AL=[3,2], WL=[1,3], WS=dead, GS=present
+There's still something to do...
+
+
+
+New Round: I am at [3,2] and I have visited [[2,2],[2,3],[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]]
+make_percept_sentence... _11284,_11290,_11296 
+smelly=no 
+Stench... no 
+I'm in [3,2], seeing: [no,yes,yes]
+update_KB [no,yes,yes]
+add_wumpus_KB no
+Not visited before= [3,2]
+KB learn [3,3] - no Wumpus there!
+KB learn [3,1] - no Wumpus there!
+KB learn [4,2] - no Wumpus there!
+KB learn [2,2] - no Wumpus there!
+add_pit_KB yes
+Not visited before= [3,2]
+KB learn [3,3] - is it a Pit?
+KB learn [3,3] - maybe there is a Pit!
+KB learn [3,1] - is it a Pit?
+KB learn [3,1] - maybe there is a Pit!
+KB learn [4,2] - is it a Pit?
+KB learn [4,2] - maybe there is a Pit!
+KB learn [2,2] - is it a Pit?
+I know there is no Pit at [2,2]!
+add_gold_KB yes
+KB learn [3,2] - glitter detected!
+add_ok_KB no,yes
+Not visited before= [3,2]
+add_ok_KB_item [3,3]
+assume_ok(no,maybe,L) [3,3]
+KB learn [3,3] is NOT OK
+add_ok_KB_item [3,1]
+assume_ok(no,maybe,L) [3,1]
+KB learn [3,1] is NOT OK
+add_ok_KB_item [4,2]
+assume_ok(no,maybe,L) [4,2]
+KB learn [4,2] is NOT OK
+add_ok_KB_item [2,2]
+assume_ok(no,no,L) [2,2]
+KB learn [2,2] is OK
+Maybe Wumpus locations: []
+ask_KB VisitedList=[[3,2],[2,2],[2,3],[2,4],[3,4],[2,4],[1,4],[1,3],[2,3],[2,3],[2,2],[2,1],[1,1],[1,2],[1,1]] - Action=_12934
+make_percept_sentence... _12980,_12986,_12992 
+smelly=no 
+Stench... no 
+agent_location=[3,2], Glitter=yes
+Glitter detected at [3,2], grabbing gold!
+I grab the gold!
+KB learn [3,2] - GOT THE GOLD!!!
+New score: 976
+New time: 15
+New score: 975
+Checking standing: Gold grabbed, ending game!
+Checking standing: AL=[3,2], WL=[1,3], WS=dead, GS=grabbed
+AGENT GRABBED THE GOLD!!
+WON!
+Score: 975,
+ Time: 15

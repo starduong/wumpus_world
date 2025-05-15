@@ -5,23 +5,25 @@ import os
 import re
 import subprocess
 import shutil
+import ast
 
-# --- Configuration ---
+# --- Cấu hình ---
 PROLOG_EXECUTABLE = "swipl"
-PROLOG_SCRIPT = "wumpus_agent.pl"
-KB_FILE_PATH = "kb.txt"
+PROLOG_SCRIPT = os.path.join(os.path.dirname(__file__), "wumpus_agent.pl") # Cập nhật để sử dụng file Prolog của bạn
+KB_FILE_PATH = os.path.join(os.path.dirname(__file__), "kb.txt")
+INIT_DATA_PATH = os.path.join(os.path.dirname(__file__), "init_data.txt") # Đường dẫn đến file init_data.txt
 
-# --- Pygame Setup ---
+# --- Thiết lập Pygame ---
 pygame.init()
 pygame.font.init()
 
-# Screen dimensions
+# Kích thước màn hình
 SCREEN_WIDTH = 950
 SCREEN_HEIGHT = 700
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Wumpus World (Simulated from kb.txt)")
 
-# Colors
+# Màu sắc
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
@@ -32,20 +34,75 @@ GOLD_COLOR = (255, 215, 0)
 LIGHT_BLUE = (173, 216, 230)
 ORANGE = (255, 165, 0)
 PURPLE = (128, 0, 128)
-DIM_COLOR = (0, 0, 0, 150)  # Semi-transparent black for dimming
+DIM_COLOR = (0, 0, 0, 150)  # Màu mờ cho các ô chưa thăm
 
-# Fonts
+# Font chữ
 FONT_SMALL = pygame.font.SysFont("arial", 18)
 FONT_MEDIUM = pygame.font.SysFont("arial", 22)
 FONT_LARGE = pygame.font.SysFont("arial", 28)
 
-# Grid settings
+# Cài đặt lưới
 CELL_SIZE = 70
 GRID_MARGIN_X = 50
 GRID_MARGIN_Y = 50
-WORLD_DIM = 4
 
-# --- Asset Loading ---
+# --- Đọc cấu hình từ init_data.txt ---
+def load_init_data():
+    """
+    Đọc dữ liệu từ init_data.txt để lấy kích thước bản đồ, vị trí Wumpus, hố, và vàng.
+    Trả về tuple (world_dim, wumpus_locations, pit_locations, gold_location).
+    Nếu đọc thất bại, trả về giá trị mặc định.
+    """
+    global WORLD_DIM, initial_agent_pos_prolog, pit_locations_prolog, wumpus_location_prolog, gold_location_prolog
+    try:
+        with open(INIT_DATA_PATH, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        
+        if len(lines) != 4:
+            print(f"Lỗi: init_data.txt phải có đúng 4 dòng, nhận được {len(lines)} dòng.")
+            return False
+
+        # Đọc kích thước bản đồ
+        world_dim = int(lines[0].strip().rstrip("."))
+        
+        # Đọc danh sách vị trí Wumpus (có thể nhiều Wumpus)
+        wumpus_locations = ast.literal_eval(lines[1].strip().rstrip("."))
+        
+        # Đọc danh sách vị trí hố
+        pit_locations = ast.literal_eval(lines[2].strip().rstrip("."))
+        
+        # Đọc vị trí vàng
+        gold_location = ast.literal_eval(lines[3].strip().rstrip("."))
+
+        # Cập nhật các biến toàn cục
+        WORLD_DIM = world_dim
+        initial_agent_pos_prolog = [1, 1]  # Agent luôn bắt đầu tại [1,1]
+        wumpus_location_prolog = wumpus_locations  # Danh sách các Wumpus
+        pit_locations_prolog = pit_locations
+        gold_location_prolog = gold_location
+
+        print(f"Đã đọc init_data.txt: world_dim={world_dim}, wumpus={wumpus_locations}, "
+              f"pit={pit_locations}, gold={gold_location}")
+        return True
+
+    except FileNotFoundError:
+        print(f"Lỗi: Không tìm thấy file {INIT_DATA_PATH}")
+        return False
+    except (ValueError, SyntaxError) as e:
+        print(f"Lỗi khi phân tích init_data.txt: {e}")
+        return False
+    except Exception as e:
+        print(f"Lỗi không xác định khi đọc init_data.txt: {e}")
+        return False
+
+# --- Thiết lập mặc định (sử dụng nếu không đọc được init_data.txt) ---
+WORLD_DIM = 4
+initial_agent_pos_prolog = [1, 1]
+pit_locations_prolog = [[4, 4], [3, 3], [3, 1]]
+wumpus_location_prolog = [[1, 3]]  # Sửa thành danh sách để hỗ trợ nhiều Wumpus
+gold_location_prolog = [3, 2]
+
+# --- Tải tài nguyên hình ảnh ---
 agent_img = None
 wumpus_img = None
 pit_img = None
@@ -58,10 +115,12 @@ arrow_img = None
 safe_img = None
 question_mark_img = None
 
-
 def load_image(name, size=(CELL_SIZE - 10, CELL_SIZE - 10)):
+    """
+    Tải hình ảnh từ thư mục hoặc tạo hình ảnh thay thế nếu không tìm thấy.
+    """
     try:
-        path = os.path.join("images", name)
+        path = os.path.join("image", name)
         if not os.path.exists(path):
             path = name
             if not os.path.exists(path):
@@ -69,7 +128,7 @@ def load_image(name, size=(CELL_SIZE - 10, CELL_SIZE - 10)):
                 if os.path.exists(path_no_ext):
                     path = path_no_ext
                 else:
-                    print(f"Cannot find image file: {name}")
+                    print(f"Không tìm thấy file hình ảnh: {name}")
                     surface = pygame.Surface(size)
                     surface.fill(GRAY)
                     text = FONT_SMALL.render(name.split(".")[0][:3], True, BLACK)
@@ -81,7 +140,7 @@ def load_image(name, size=(CELL_SIZE - 10, CELL_SIZE - 10)):
         image = pygame.transform.scale(image, size)
         return image
     except pygame.error as e:
-        print(f"Cannot load image: {name} - {e}")
+        print(f"Không thể tải hình ảnh: {name} - {e}")
         surface = pygame.Surface(size)
         surface.fill(GRAY)
         text = FONT_SMALL.render(name.split(".")[0][:3], True, BLACK)
@@ -89,7 +148,7 @@ def load_image(name, size=(CELL_SIZE - 10, CELL_SIZE - 10)):
         surface.blit(text, text_rect)
         return surface
     except FileNotFoundError:
-        print(f"Cannot find image file: {name}")
+        print(f"Không tìm thấy file hình ảnh: {name}")
         surface = pygame.Surface(size)
         surface.fill(GRAY)
         text = FONT_SMALL.render(name.split(".")[0][:3], True, BLACK)
@@ -97,22 +156,27 @@ def load_image(name, size=(CELL_SIZE - 10, CELL_SIZE - 10)):
         surface.blit(text, text_rect)
         return surface
 
-
 def create_question_mark_img(size):
+    """
+    Tạo hình ảnh dấu chấm hỏi cho các ô có khả năng chứa Wumpus hoặc hố.
+    """
     surface = pygame.Surface(size, pygame.SRCALPHA)
     text = FONT_MEDIUM.render("?", True, RED)
     text_rect = text.get_rect(center=(size[0] // 2, size[1] // 2))
     surface.blit(text, text_rect)
     return surface
 
-
 def load_all_images():
+    """
+    Tải tất cả hình ảnh cần thiết cho giao diện.
+    """
     global agent_img, wumpus_img, pit_img, gold_img, stench_img, breeze_img, glitter_img
     global start_node_img, arrow_img, safe_img, question_mark_img
     entity_size = (int(CELL_SIZE * 0.8), int(CELL_SIZE * 0.8))
     percept_icon_size = (int(CELL_SIZE * 0.4), int(CELL_SIZE * 0.4))
     safe_icon_size = (int(CELL_SIZE * 0.5), int(CELL_SIZE * 0.5))
 
+    # Tải hình ảnh từ thư mục gốc hoặc thư mục images
     agent_img = load_image("../image/agent.png", entity_size)
     wumpus_img = load_image("../image/wumpus.png", entity_size)
     pit_img = load_image("../image/pit.png", entity_size)
@@ -124,6 +188,7 @@ def load_all_images():
     safe_img = load_image("../image/safe.png", safe_icon_size)
     question_mark_img = create_question_mark_img(entity_size)
 
+    # Tạo hình ảnh cho điểm bắt đầu
     surf = pygame.Surface(entity_size, pygame.SRCALPHA)
     pygame.draw.circle(
         surf, GREEN, (entity_size[0] // 2, entity_size[1] // 2), entity_size[0] // 3
@@ -135,14 +200,9 @@ def load_all_images():
     surf.blit(start_text_render, start_text_rect)
     start_node_img = surf
 
-
 load_all_images()
 
-# --- Game State Variables ---
-initial_agent_pos_prolog = [1, 1]
-pit_locations_prolog = [[4, 4], [3, 3], [3, 1]]
-wumpus_location_prolog = [1, 3]
-gold_location_prolog = [3, 2]
+# --- Biến trạng thái trò chơi ---
 simulation_steps_data = []
 current_step_index = -1
 simulation_agent_pos = list(initial_agent_pos_prolog)
@@ -162,20 +222,24 @@ visited_locations = [list(initial_agent_pos_prolog)]
 step_by_step_mode = True
 simulation_running = False
 message_log = [
-    "Welcome to Wumpus World (Simulated)! Please click 'Start Sim' to begin."
+    "Welcome to Wumpus World (Simulated)! Please press 'Start Sim' to begin."
 ]
 MAX_LOG_LINES = 15
 last_auto_step_time = 0
 
-
-# --- Helper Functions ---
+# --- Hàm hỗ trợ ---
 def prolog_to_grid_coords(prolog_x, prolog_y):
+    """
+    Chuyển tọa độ Prolog ([X,Y]) sang tọa độ lưới Pygame.
+    """
     grid_col = prolog_x - 1
     grid_row = WORLD_DIM - prolog_y
     return grid_col, grid_row
 
-
 def grid_to_screen_coords(grid_col, grid_row):
+    """
+    Chuyển tọa độ lưới sang tọa độ màn hình Pygame.
+    """
     screen_x = (
         GRID_MARGIN_X + grid_col * CELL_SIZE + (CELL_SIZE - agent_img.get_width()) // 2
     )
@@ -184,132 +248,136 @@ def grid_to_screen_coords(grid_col, grid_row):
     )
     return screen_x, screen_y
 
-
 def add_message(msg):
+    """
+    Thêm thông báo vào log và giới hạn số dòng tối đa.
+    """
     print(f"UI_LOG: {msg}")
     message_log.insert(0, msg)
     if len(message_log) > MAX_LOG_LINES:
         message_log.pop()
 
-
 def parse_prolog_coord(coord_str):
+    """
+    Phân tích chuỗi tọa độ Prolog (ví dụ: [1,2]) thành list [1,2].
+    """
     match = re.search(r"\[(\d+),(\d+)\]", coord_str)
     if match:
         return [int(match.group(1)), int(match.group(2))]
     return None
 
-
 def parse_prolog_percepts(percept_str):
+    """
+    Phân tích chuỗi tri giác Prolog (ví dụ: [yes,no,yes]) thành list [stench, breeze, glitter].
+    """
     match = re.search(r"\[(yes|no),(yes|no),(yes|no)\]", percept_str)
     if match:
         return [match.group(1), match.group(2), match.group(3)]
     match_vars = re.search(r"\[(_\d+),(_\d+),(_\d+)\]", percept_str)
     if match_vars:
         return ["no", "no", "no"]
-    print(f"Warning: Could not parse percepts: {percept_str}")
+    print(f"Warning: Unable to analyze perception:{percept_str}")
     return ["?", "?", "?"]
 
-
-# --- Prolog Execution ---
+# --- Thực thi Prolog ---
 def find_prolog_executable(name=PROLOG_EXECUTABLE):
+    """
+    Tìm đường dẫn đến chương trình Prolog (swipl).
+    """
     path = shutil.which(name)
     if path:
-        add_message(f"Found Prolog executable: {path}")
+        add_message(f"Tìm thấy Prolog: {path}")
         return path
     else:
-        add_message(
-            f"Warning: '{name}' not found in PATH. Assuming it's callable directly."
-        )
+        add_message(f"Warning: '{name}' not found in PATH. Direct call assumed.")
         return name
 
-
 def run_prolog_script():
+    """
+    Chạy file Prolog và tạo kb.txt.
+    """
     global simulation_game_status
     prolog_cmd = find_prolog_executable()
     if not prolog_cmd:
-        add_message(
-            f"ERROR: Cannot find Prolog executable ('{PROLOG_EXECUTABLE}'). Please install SWI-Prolog."
-        )
+        add_message(f"ERROR: Prolog ('{PROLOG_EXECUTABLE}') not found. Please install SWI-Prolog.")
         simulation_game_status = "error"
         return False
 
     if not os.path.exists(PROLOG_SCRIPT):
-        add_message(f"ERROR: Prolog script '{PROLOG_SCRIPT}' not found.")
+        add_message(f"LỖI: Không tìm thấy file Prolog '{PROLOG_SCRIPT}'.")
         simulation_game_status = "error"
         return False
 
     command = [prolog_cmd, "-s", PROLOG_SCRIPT, "-g", "start.", "-t", "halt."]
-    add_message(f"Running Prolog: {' '.join(command)}")
+    add_message(f"Chạy Prolog: {' '.join(command)}")
     try:
         result = subprocess.run(
             command, capture_output=True, text=True, timeout=15, check=False
         )
         if result.returncode != 0:
-            add_message(
-                f"ERROR: Prolog script exited with error code {result.returncode}."
-            )
+            add_message(f"LỖI: Prolog thoát với mã lỗi {result.returncode}.")
             add_message("--- Prolog stdout: ---")
-            add_message(result.stdout if result.stdout else "<empty>")
+            add_message(result.stdout if result.stdout else "<trống>")
             add_message("--- Prolog stderr: ---")
-            add_message(result.stderr if result.stderr else "<empty>")
+            add_message(result.stderr if result.stderr else "<trống>")
             simulation_game_status = "error"
             if os.path.exists(KB_FILE_PATH):
                 try:
-                    os.remove(KB_FILE_PATH)
-                    add_message(f"Removed potentially incomplete {KB_FILE_PATH}.")
+                    with open(KB_FILE_PATH, "w") as f:
+                        pass  # Hoặc f.write("") để rõ nghĩa hơn
+                    add_message(f"Đã clear nội dung trong {KB_FILE_PATH} .")
                 except OSError as e:
-                    add_message(f"Warning: Could not remove {KB_FILE_PATH}: {e}")
+                    add_message(f"Cảnh báo: Không thể ghi rỗng vào {KB_FILE_PATH}: {e}")
+
             return False
         else:
-            add_message("Prolog script executed successfully.")
+            add_message("Thực thi Prolog thành công.")
             if not os.path.exists(KB_FILE_PATH):
-                add_message(
-                    f"ERROR: Prolog script finished, but '{KB_FILE_PATH}' was not created."
-                )
+                add_message(f"LỖI: Prolog hoàn tất nhưng không tạo '{KB_FILE_PATH}'.")
                 add_message("--- Prolog stdout: ---")
-                add_message(result.stdout if result.stdout else "<empty>")
+                add_message(result.stdout if result.stdout else "<trống>")
                 add_message("--- Prolog stderr: ---")
-                add_message(result.stderr if result.stderr else "<empty>")
+                add_message(result.stderr if result.stderr else "<trống>")
                 simulation_game_status = "error"
                 return False
             return True
     except FileNotFoundError:
-        add_message(
-            f"ERROR: Prolog command '{prolog_cmd}' not found. Is SWI-Prolog installed?"
-        )
+        add_message(f"LỖI: Không tìm thấy lệnh Prolog '{prolog_cmd}'. Đã cài SWI-Prolog chưa?")
         simulation_game_status = "error"
         return False
     except subprocess.TimeoutExpired:
-        add_message("ERROR: Prolog script timed out (took longer than 15 seconds).")
+        add_message("LỖI: Prolog hết thời gian (quá 15 giây).")
         simulation_game_status = "error"
         return False
     except Exception as e:
-        add_message(f"ERROR: An unexpected error occurred while running Prolog: {e}")
+        add_message(f"LỖI: Lỗi bất ngờ khi chạy Prolog: {e}")
         simulation_game_status = "error"
         return False
 
-
-# --- KB.TXT Parsing Logic ---
+# --- Phân tích KB.TXT ---
 def load_and_parse_kb_log(filepath=KB_FILE_PATH):
+    """
+    Đọc và phân tích file kb.txt để lấy dữ liệu mô phỏng.
+    """
     global simulation_steps_data, simulation_wumpus_location, simulation_wumpus_status
     simulation_steps_data = []
     if not os.path.exists(filepath):
-        add_message(f"ERROR: Cannot find simulation file {filepath}")
+        add_message(f"LỖI: Không tìm thấy file mô phỏng {filepath}")
         return False
     try:
         with open(filepath, "r") as f:
             content = f.read()
     except Exception as e:
-        add_message(f"ERROR: Could not read file {filepath}: {e}")
+        add_message(f"LỖI: Không thể đọc file {filepath}: {e}")
         return False
 
     rounds_text = content.split("New Round:")[1:]
     if not rounds_text:
-        add_message(f"ERROR: No 'New Round:' sections found in {filepath}")
+        add_message(f"LỖI: Không tìm thấy đoạn 'New Round:' trong {filepath}")
         if not content.strip():
-            add_message("File is empty.")
+            add_message("File trống.")
         else:
-            add_message("File content does not contain expected 'New Round:' markers.")
+            add_message("Nội dung file không chứa dấu 'New Round:'.")
         return False
 
     current_round_num = 0
@@ -533,22 +601,24 @@ def load_and_parse_kb_log(filepath=KB_FILE_PATH):
             current_round_num += 1
         else:
             add_message(
-                f"Warning: Incomplete data for round {current_round_num+1}. Skipping."
+                f"Cảnh báo: Dữ liệu không đầy đủ cho vòng {current_round_num+1}. Bỏ qua."
             )
-            print(f"Debug: Incomplete step data: {step_info}")
+            print(f"Debug: Dữ liệu bước không hoàn chỉnh: {step_info}")
 
     if not simulation_steps_data:
-        add_message(f"ERROR: Could not parse any valid steps from {filepath}")
+        add_message(f"LỖI: Không thể phân tích bất kỳ bước hợp lệ nào từ {filepath}")
         return False
 
     add_message(
-        f"Successfully parsed {len(simulation_steps_data)} steps from {filepath}"
+        f"Đã phân tích thành công {len(simulation_steps_data)} bước từ {filepath}"
     )
     return True
 
-
-# --- Drawing Functions ---
+# --- Hàm vẽ ---
 def draw_grid():
+    """
+    Vẽ lưới bản đồ với tọa độ Prolog.
+    """
     for r_idx_pygame in range(WORLD_DIM):
         for c_idx_pygame in range(WORLD_DIM):
             rect = pygame.Rect(
@@ -562,7 +632,7 @@ def draw_grid():
             prolog_y = WORLD_DIM - r_idx_pygame
             coord_text = FONT_SMALL.render(f"({prolog_x},{prolog_y})", True, GRAY)
             screen.blit(coord_text, (rect.x + 5, rect.y + 5))
-            # Dim unvisited and unknown cells
+            # Làm mờ các ô chưa thăm và chưa biết
             cell = [prolog_x, prolog_y]
             if current_step_index >= 0:
                 visited = simulation_steps_data[current_step_index]["visited_locations"]
@@ -581,10 +651,12 @@ def draw_grid():
                     dim_surface.fill(DIM_COLOR)
                     screen.blit(dim_surface, (rect.x, rect.y))
 
-
 def draw_world_elements():
+    """
+    Vẽ các thành phần của thế giới (hố, vàng, Wumpus, ô an toàn, v.v.).
+    """
     if current_step_index < 0:
-        # Draw start position only in initial state
+        # Chỉ vẽ vị trí bắt đầu ở trạng thái ban đầu
         if initial_agent_pos_prolog:
             col, row = prolog_to_grid_coords(
                 initial_agent_pos_prolog[0], initial_agent_pos_prolog[1]
@@ -601,27 +673,25 @@ def draw_world_elements():
     maybe_pit_locs = step_data["maybe_pit_locations"]
     percepts = step_data["percepts"]
 
-    # Draw safe locations
+    # Vẽ các ô an toàn
     for safe_x, safe_y in safe_locs:
         col, row = prolog_to_grid_coords(safe_x, safe_y)
         s_x = GRID_MARGIN_X + col * CELL_SIZE + (CELL_SIZE - safe_img.get_width()) // 2
         s_y = GRID_MARGIN_Y + row * CELL_SIZE + (CELL_SIZE - safe_img.get_height()) // 2
         screen.blit(safe_img, (s_x, s_y))
 
-    # Draw maybe pits (inferred from breeze percepts or KB)
+    # Vẽ các ô có thể có hố
     for pit_x, pit_y in maybe_pit_locs:
         col, row = prolog_to_grid_coords(pit_x, pit_y)
         s_x, s_y = grid_to_screen_coords(col, row)
-        # Draw pit with 50% transparency
         pit_img_alpha = pit_img.copy()
         pit_img_alpha.set_alpha(128)
         screen.blit(pit_img_alpha, (s_x, s_y))
-        # Add question mark
         q_x = s_x + (pit_img.get_width() - question_mark_img.get_width()) // 2
         q_y = s_y + (pit_img.get_height() - question_mark_img.get_height()) // 2
         screen.blit(question_mark_img, (q_x, q_y))
 
-    # Draw gold if glitter is perceived and not grabbed
+    # Vẽ vàng nếu cảm nhận lấp lánh và chưa nhặt
     if gold_location_prolog and step_data["end_status"] != "won":
         g_x, g_y = gold_location_prolog
         if (
@@ -633,29 +703,36 @@ def draw_world_elements():
             s_x, s_y = grid_to_screen_coords(col, row)
             screen.blit(gold_img, (s_x, s_y))
 
-    # Draw maybe Wumpus
+    # Vẽ các ô có thể có Wumpus
     for w_x, w_y in maybe_wumpus_locs:
-        if [w_x, w_y] != wumpus_location or wumpus_status != "alive":
-            col, row = prolog_to_grid_coords(w_x, w_y)
-            s_x, s_y = grid_to_screen_coords(col, row)
-            # Draw Wumpus with 50% transparency
-            wumpus_img_alpha = wumpus_img.copy()
-            wumpus_img_alpha.set_alpha(128)
-            screen.blit(wumpus_img_alpha, (s_x, s_y))
-            # Add question mark
-            q_x = s_x + (wumpus_img.get_width() - question_mark_img.get_width()) // 2
-            q_y = s_y + (wumpus_img.get_height() - question_mark_img.get_height()) // 2
-            screen.blit(question_mark_img, (q_x, q_y))
+        if (
+            len(maybe_wumpus_locs) == 1
+            and [w_x, w_y] == wumpus_location
+            and wumpus_status == "alive"
+        ):
+            continue
+        col, row = prolog_to_grid_coords(w_x, w_y)
+        s_x, s_y = grid_to_screen_coords(col, row)
+        wumpus_img_alpha = wumpus_img.copy()
+        wumpus_img_alpha.set_alpha(128)
+        screen.blit(wumpus_img_alpha, (s_x, s_y))
+        q_x = s_x + (wumpus_img.get_width() - question_mark_img.get_width()) // 2
+        q_y = s_y + (wumpus_img.get_height() - question_mark_img.get_height()) // 2
+        screen.blit(question_mark_img, (q_x, q_y))
 
-    # Draw confirmed Wumpus
-    if wumpus_status == "alive" and wumpus_location:
+    # Vẽ Wumpus đã xác định
+    if (
+        wumpus_status == "alive"
+        and wumpus_location
+        and len(maybe_wumpus_locs) == 1
+        and wumpus_location in maybe_wumpus_locs
+    ):
         w_x, w_y = wumpus_location
-        if len(maybe_wumpus_locs) == 1 and [w_x, w_y] in maybe_wumpus_locs:
-            col, row = prolog_to_grid_coords(w_x, w_y)
-            s_x, s_y = grid_to_screen_coords(col, row)
-            screen.blit(wumpus_img, (s_x, s_y))
+        col, row = prolog_to_grid_coords(w_x, w_y)
+        s_x, s_y = grid_to_screen_coords(col, row)
+        screen.blit(wumpus_img, (s_x, s_y))
 
-    # Draw start position
+    # Vẽ vị trí bắt đầu
     if initial_agent_pos_prolog:
         col, row = prolog_to_grid_coords(
             initial_agent_pos_prolog[0], initial_agent_pos_prolog[1]
@@ -664,8 +741,10 @@ def draw_world_elements():
         if simulation_agent_pos != initial_agent_pos_prolog:
             screen.blit(start_node_img, (s_x, s_y))
 
-
 def draw_agent_path():
+    """
+    Vẽ đường đi của agent.
+    """
     if len(simulation_agent_path) > 1:
         points_screen = []
         for p_pos_prolog in simulation_agent_path:
@@ -675,12 +754,14 @@ def draw_agent_path():
                 center_y = GRID_MARGIN_Y + row * CELL_SIZE + CELL_SIZE // 2
                 points_screen.append((center_x, center_y))
             else:
-                print(f"Warning: Invalid point in agent path: {p_pos_prolog}")
+                print(f"Cảnh báo: Điểm không hợp lệ trong đường đi: {p_pos_prolog}")
         if len(points_screen) > 1:
             pygame.draw.lines(screen, BLUE, False, points_screen, 3)
 
-
 def draw_action_effects():
+    """
+    Vẽ hiệu ứng hành động (ví dụ: bắn mũi tên).
+    """
     if current_step_index < 0:
         return
     current_step = simulation_steps_data[current_step_index]
@@ -703,8 +784,10 @@ def draw_action_effects():
         )
         pygame.draw.line(screen, RED, (start_x, start_y), (target_x, target_y), 2)
 
-
 def draw_agent():
+    """
+    Vẽ agent tại vị trí hiện tại.
+    """
     if simulation_agent_pos:
         col, row = prolog_to_grid_coords(
             simulation_agent_pos[0], simulation_agent_pos[1]
@@ -712,8 +795,10 @@ def draw_agent():
         s_x, s_y = grid_to_screen_coords(col, row)
         screen.blit(agent_img, (s_x, s_y))
 
-
 def draw_percepts_at_agent_location():
+    """
+    Vẽ các tri giác (mùi, gió, lấp lánh) tại vị trí agent.
+    """
     if (
         simulation_percepts_current
         and simulation_agent_pos
@@ -723,7 +808,6 @@ def draw_percepts_at_agent_location():
         if stench_val == "?" and breeze_val == "?":
             return
 
-        # Convert agent's Prolog coordinates to grid coordinates
         col_agent, row_agent = prolog_to_grid_coords(
             simulation_agent_pos[0], simulation_agent_pos[1]
         )
@@ -745,9 +829,11 @@ def draw_percepts_at_agent_location():
         if glitter_val == "yes":
             screen.blit(glitter_img, (current_x, icon_y_offset))
 
-
-# --- UI Drawing ---
+# --- Vẽ giao diện người dùng ---
 def draw_ui_elements():
+    """
+    Vẽ các nút điều khiển và thông tin trạng thái.
+    """
     ui_start_x = GRID_MARGIN_X + WORLD_DIM * CELL_SIZE + 30
     button_width = 180
     button_height = 40
@@ -852,9 +938,11 @@ def draw_ui_elements():
 
     return reset_button_rect, start_button_rect, step_button_rect, step_mode_button_rect
 
-
-# --- Game Logic Functions ---
+# --- Hàm logic trò chơi ---
 def initialize_simulation():
+    """
+    Khởi tạo mô phỏng, đọc init_data.txt và chạy Prolog.
+    """
     global current_step_index, simulation_agent_pos, simulation_agent_path
     global simulation_score, simulation_time_taken, simulation_game_status
     global simulation_percepts_current, simulation_running, message_log
@@ -862,51 +950,60 @@ def initialize_simulation():
     global safe_locations, maybe_wumpus_locations, no_wumpus_locations, maybe_pit_locations, no_pit_locations
     global visited_locations
 
-    add_message("--- Initializing Simulation ---")
+    add_message("--- Khởi tạo Mô phỏng ---")
+    
+    # Đọc cấu hình từ init_data.txt
+    if not load_init_data():
+        add_message("Cảnh báo: Không thể đọc init_data.txt, sử dụng cấu hình mặc định.")
+    
+    # Cập nhật biến mô phỏng
+    simulation_wumpus_location = list(wumpus_location_prolog)
+    simulation_agent_pos = list(initial_agent_pos_prolog)
+    simulation_agent_path = [list(initial_agent_pos_prolog)]
+    visited_locations = [list(initial_agent_pos_prolog)]
+
     if not run_prolog_script():
-        add_message("Initialization failed: Could not run Prolog script.")
+        add_message("Khởi tạo thất bại: Không thể chạy file Prolog.")
         simulation_game_status = "error"
         simulation_steps_data = []
-        message_log = [msg for msg in message_log if "ERROR" in msg or "Welcome" in msg]
+        message_log = [msg for msg in message_log if "ERROR" in msg or "Chào mừng" in msg]
         return
 
     if not load_and_parse_kb_log():
-        add_message(f"Initialization failed: Could not parse '{KB_FILE_PATH}'.")
+        add_message(f"Khởi tạo thất bại: Không thể phân tích '{KB_FILE_PATH}'.")
         simulation_game_status = "error"
-        message_log = [msg for msg in message_log if "ERROR" in msg or "Welcome" in msg]
+        message_log = [msg for msg in message_log if "ERROR" in msg or "Chào mừng" in msg]
         return
 
     current_step_index = -1
-    simulation_agent_pos = list(initial_agent_pos_prolog)
-    simulation_agent_path = [list(initial_agent_pos_prolog)]
     simulation_score = 0
     simulation_time_taken = 0
     simulation_percepts_current = None
     simulation_running = False
     simulation_game_status = "ready"
     simulation_wumpus_status = "alive"
-    simulation_wumpus_location = list(wumpus_location_prolog)
     safe_locations.clear()
     maybe_wumpus_locations.clear()
     no_wumpus_locations.clear()
     maybe_pit_locations.clear()
     no_pit_locations.clear()
-    visited_locations = [list(initial_agent_pos_prolog)]
 
     add_message(
-        f"Initialization complete. Agent at {simulation_agent_pos}. Press 'Start Sim'."
+        f"Khởi tạo hoàn tất. Agent tại {simulation_agent_pos}. Nhấn 'Start Sim'."
     )
     message_log = message_log[-MAX_LOG_LINES:]
 
-
 def handle_start_press():
+    """
+    Xử lý khi nhấn nút Start Sim.
+    """
     global current_step_index, simulation_game_status, simulation_percepts_current
     global simulation_running, simulation_score, simulation_time_taken, last_auto_step_time
     global simulation_agent_pos, simulation_wumpus_status, simulation_wumpus_location
     global safe_locations, maybe_wumpus_locations, no_wumpus_locations, maybe_pit_locations, no_pit_locations
 
     if not simulation_steps_data:
-        add_message("Error: No simulation data loaded. Cannot start.")
+        add_message("Lỗi: Không có dữ liệu mô phỏng. Không thể bắt đầu.")
         return
 
     first_round_data = simulation_steps_data[0]
@@ -923,7 +1020,7 @@ def handle_start_press():
     )
 
     if initial_percepts is None:
-        add_message("Error: Missing percept data for the first round in kb.txt.")
+        add_message("Lỗi: Thiếu dữ liệu tri giác cho vòng đầu tiên trong kb.txt.")
         simulation_game_status = "error"
         return
 
@@ -942,22 +1039,24 @@ def handle_start_press():
     no_pit_locations[:] = initial_no_pit
 
     add_message(
-        f"Step 0: Agent at {simulation_agent_pos}. Percepts: {initial_percepts}. Score: {simulation_score}, Time: {simulation_time_taken}. Status: playing"
+        f"Bước 0: Agent tại {simulation_agent_pos}. Tri giác: {initial_percepts}. Điểm: {simulation_score}, Thời gian: {simulation_time_taken}. Trạng thái: playing"
     )
     for msg in initial_messages:
         if not msg.startswith("I'm going to:"):
             add_message(msg)
 
     if not step_by_step_mode:
-        add_message("Simulation started (Auto Mode).")
+        add_message("Mô phỏng bắt đầu (Chế độ Tự động).")
         simulation_running = True
         last_auto_step_time = pygame.time.get_ticks()
     else:
-        add_message("Simulation started (Step Mode). Press 'Next Step' to proceed.")
+        add_message("Mô phỏng bắt đầu (Chế độ Bước). Nhấn 'Next Step' để tiếp tục.")
         simulation_running = False
 
-
 def advance_simulation_step():
+    """
+    Tiến hành bước mô phỏng tiếp theo.
+    """
     global current_step_index, simulation_agent_pos, simulation_agent_path
     global simulation_score, simulation_time_taken, simulation_game_status
     global simulation_percepts_current, simulation_running
@@ -969,7 +1068,7 @@ def advance_simulation_step():
         return False
 
     if current_step_index + 1 >= len(simulation_steps_data):
-        add_message("End of simulation data reached.")
+        add_message("Đã đến cuối dữ liệu mô phỏng.")
         simulation_game_status = (
             simulation_steps_data[current_step_index]["end_status"]
             if current_step_index >= 0
@@ -1005,15 +1104,15 @@ def advance_simulation_step():
         or current_time is None
     ):
         add_message(
-            f"Error: Missing critical data for round index {current_step_index}. Halting."
+            f"Lỗi: Thiếu dữ liệu quan trọng cho vòng {current_step_index}. Dừng lại."
         )
-        print(f"Debug data round {current_step_index}: {round_data}")
+        print(f"Dữ liệu debug vòng {current_step_index}: {round_data}")
         simulation_game_status = "error"
         simulation_running = False
         return False
 
     add_message(
-        f"Step {current_step_index}: Agent at {current_pos}. Percepts: {current_percepts}. Score: {current_score}, Time: {current_time}. Status: {current_status}"
+        f"Bước {current_step_index}: Agent tại {current_pos}. Tri giác: {current_percepts}. Điểm: {current_score}, Thời gian: {current_time}. Trạng thái: {current_status}"
     )
     for msg in current_messages:
         add_message(msg)
@@ -1038,14 +1137,16 @@ def advance_simulation_step():
 
     if simulation_game_status != "playing":
         simulation_running = False
-        add_message(f"--- Simulation {simulation_game_status.upper()} ---")
+        add_message(f"--- Mô phỏng {simulation_game_status.upper()} ---")
         return False
 
     return True
 
-
-# --- Main Game Loop ---
+# --- Vòng lặp chính ---
 async def main():
+    """
+    Vòng lặp chính của trò chơi, xử lý sự kiện và cập nhật giao diện.
+    """
     global simulation_running, step_by_step_mode, message_log, current_step_index, last_auto_step_time
     running = True
     clock = pygame.time.Clock()
@@ -1071,9 +1172,9 @@ async def main():
                     ui_button_rects
                 )
                 if reset_btn_rect.collidepoint(mouse_pos):
-                    add_message("Reset button clicked.")
+                    add_message("Nút Reset được nhấn.")
                     message_log = [
-                        "Welcome to Wumpus World (Simulated)! Please click 'Start Sim' to begin."
+                        "Chào mừng đến với Wumpus World (Simulated)! Vui lòng nhấn 'Start Sim' để bắt đầu."
                     ]
                     initialize_simulation()
                 elif start_btn_rect.collidepoint(mouse_pos):
@@ -1081,39 +1182,39 @@ async def main():
                         handle_start_press()
                     elif simulation_game_status == "playing":
                         if step_by_step_mode:
-                            add_message("Use 'Next Step' button in Step Mode.")
+                            add_message("Sử dụng nút 'Next Step' trong Chế độ Bước.")
                         elif simulation_running:
-                            add_message("Pause Simulation button clicked.")
+                            add_message("Nút Tạm dừng Mô phỏng được nhấn.")
                             simulation_running = False
                         else:
-                            add_message("Resume Simulation button clicked.")
+                            add_message("Nút Tiếp tục Mô phỏng được nhấn.")
                             simulation_running = True
                             last_auto_step_time = current_time_ms
                     else:
-                        add_message("Start Sim button clicked (Resetting).")
+                        add_message("Nút Start Sim được nhấn (Đặt lại).")
                         message_log = [
-                            "Welcome to Wumpus World (Simulated)! Please click 'Start Sim' to begin."
+                            "Chào mừng đến với Wumpus World (Simulated)! Vui lòng nhấn 'Start Sim' để bắt đầu."
                         ]
                         initialize_simulation()
                 elif step_btn_rect.collidepoint(mouse_pos):
                     if step_by_step_mode and simulation_game_status == "playing":
-                        add_message("Next Step button clicked.")
+                        add_message("Nút Next Step được nhấn.")
                         if advance_simulation_step():
-                            add_message(f"Advanced to step {current_step_index}.")
+                            add_message(f"Đã tiến tới bước {current_step_index}.")
                         else:
-                            add_message("Cannot advance further.")
+                            add_message("Không thể tiến thêm.")
                 elif step_mode_btn_rect.collidepoint(mouse_pos):
                     step_by_step_mode = not step_by_step_mode
                     add_message(
-                        f"Step Mode toggled to {'ON' if step_by_step_mode else 'OFF'}."
+                        f"Chế độ Bước được chuyển thành {'ON' if step_by_step_mode else 'OFF'}."
                     )
                     if step_by_step_mode and simulation_running:
                         simulation_running = False
-                        add_message("Simulation paused due to Step Mode ON.")
+                        add_message("Mô phỏng tạm dừng do Chế độ Bước BẬT.")
                     elif not step_by_step_mode and simulation_game_status == "playing":
                         simulation_running = True
                         last_auto_step_time = current_time_ms
-                        add_message("Simulation resumed in Auto Mode.")
+                        add_message("Mô phỏng tiếp tục ở Chế độ Tự động.")
 
         if (
             simulation_running
@@ -1124,7 +1225,7 @@ async def main():
                 if advance_simulation_step():
                     last_auto_step_time = current_time_ms
                 else:
-                    add_message("Simulation stopped: End of steps or game over.")
+                    add_message("Mô phỏng dừng: Hết bước hoặc trò chơi kết thúc.")
                     simulation_running = False
 
         screen.fill(WHITE)
@@ -1142,7 +1243,6 @@ async def main():
             await asyncio.sleep(1.0 / 60)
         else:
             await asyncio.sleep(0)
-
 
 if __name__ == "__main__":
     asyncio.run(main())

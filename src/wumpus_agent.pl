@@ -20,7 +20,7 @@
     isGold/2,
     isOK/2,
     arrows/1,
-    wumpus_status/1,
+    wumpus_status/2,
     known_wumpus_location/1,
     gold_status/1
 ]).
@@ -29,15 +29,38 @@
 % To start the game
 
 start :-
-    ( tell('kb.txt') ->
-        format('Initializing started...~n', []),
+    format('DEBUG: Starting...~n', []),
+    clear_kb,
+    (tell('kb.txt') ->
+        format('DEBUG: kb.txt opened~n', []),
         init,
-        format('Let the game begin!~n', []),
+        format('DEBUG: Initialization complete~n', []),
         take_steps([], 0),
-        told
-    ; format('Error: Could not open kb.txt~n', []),
+        told,
+        format('DEBUG: Finished successfully~n', [])
+    ; format('ERROR: Failed to open kb.txt~n', []),
       fail
     ).
+
+clear_kb :-
+    % Xóa toàn bộ các facts động (KB cũ)
+    retractall(agent_location(_)),
+    retractall(gold_location(_)),
+    retractall(pit_location(_)),
+    retractall(time_taken(_)),
+    retractall(score(_)),
+    retractall(visited_cells(_)),
+    retractall(world_size(_)),
+    retractall(wumpus_location(_)),
+    retractall(isPit(_, _)),
+    retractall(isWumpus(_, _)),
+    retractall(isGold(_, _)),
+    retractall(isOK(_, _)),
+    retractall(arrows(_)),
+    retractall(wumpus_status(_, _)),
+    retractall(known_wumpus_location(_)),
+    retractall(gold_status(_)).
+
 
 %------------------------------------------------------------------------------
 % Scheduling simulation:
@@ -48,7 +71,7 @@ step_pre(VisitedList, Steps) :-
     pit_location(PL),
     score(S),
     time_taken(T),
-    wumpus_status(WS),
+    wumpus_status(WL, WS),
     gold_status(GS),
     % Check for loss or win conditions
     ( GS = grabbed ->
@@ -117,23 +140,25 @@ take_steps(VisitedList, Steps) :-
     ).
 
 take_steps(_, Steps) :-
-    Steps >= 100,
-    format('Error: Maximum steps (100) reached, possible infinite loop~n', []),
-    fail.
-
+    Steps >= 100, % Kiểm tra nếu vượt quá 30 bước
+    format('Error: Maximum steps (30) reached, possible infinite loop~n', []),
+    score(S),
+    time_taken(T),
+    format('Score: ~p,~n Time: ~p~n', [S,T]),
+    halt.
 %------------------------------------------------------------------------------
 % Arrow shooting
 
 shoot_arrow(WL) :-
     wumpus_location(WL),
-    retractall( wumpus_status(_) ),
-    assert( wumpus_status(dead) ),
-    retractall( arrows(_) ),
-    assert( arrows(0) ),
-    retractall( isWumpus(_, WL) ),
-    assert( isWumpus(no, WL) ),
-    retractall( isOK(_, WL) ),
-    assert( isOK(yes, WL) ),
+    retractall(wumpus_status(WL, _)),
+    assert(wumpus_status(WL, dead)),
+    retractall(arrows(_)),
+    assert(arrows(0)),
+    retractall(isWumpus(_, WL)),
+    assert(isWumpus(no, WL)),
+    retractall(isOK(_, WL)),
+    assert(isOK(yes, WL)),
     format('Wumpus at ~p is killed!~n', [WL]),
     format('KB learn ~p is now OK~n', [WL]),
     update_score(-10).
@@ -162,10 +187,7 @@ update_time :-
     assert( time_taken(NewTime) ),
     format('New time: ~p~n', [NewTime]).
 
-update_score :-
-    agent_location(AL),
-    wumpus_location(WL),
-    update_score(AL, WL).
+
 
 update_score(P) :-
     score(S),
@@ -174,7 +196,7 @@ update_score(P) :-
     assert( score(NewScore) ),
     format('New score: ~p~n', [NewScore]).
 
-update_score(AL, WL) :-
+update_score:-
     update_score(-1).
 
 update_agent_location(NewAL) :-
@@ -194,9 +216,9 @@ standing :-
     wumpus_location(WL),
     gold_location(GL),
     agent_location(AL),
-    wumpus_status(WS),
+    wumpus_status(WL, WS),
     gold_status(GS),
-    format('Checking standing: AL=~p, WL=~p, WS=~p, GS=~p~n', [AL,WL,WS,GS]),
+    format('Checking standing: AL=~p, WL=~p, WS=~p, GS=~p~n', [AL, WL, WS, GS]),
     ( is_pit(yes, AL) -> format('Agent has fallen into a pit!~n', []), fail
     ; stnd(AL, GL, WL, WS, GS)
     ).
@@ -223,12 +245,28 @@ make_percept_sentence([Stench,Breeze,Glitter]) :-
 %------------------------------------------------------------------------------
 % Initializing
 
+% Thay thế phần init bằng:
 init :-
     init_game,
-    init_land_fig72,
+    (current_prolog_flag(argv, [InputFile|_]) -> 
+        open(InputFile, read, Stream)
+    ;
+        open('init_data.txt', read, Stream)
+    ),
+    read(Stream, WorldSize), assert(world_size(WorldSize)),
+    read(Stream, WumpusList), forall(member(Pos, WumpusList), assert_wumpus(Pos)),
+    read(Stream, PitList), forall(member(Pos, PitList), assert_pit(Pos)),
+    read(Stream, GoldPos), assert(gold_location(GoldPos)),
+    close(Stream),
     init_agent,
-    init_wumpus,
     init_kb.
+
+assert_wumpus(Pos) :-
+    assertz(wumpus_location(Pos)),
+    assertz(wumpus_status(Pos, alive)).
+
+assert_pit(Pos) :-
+    assertz(pit_location(Pos)).
 
 init_game :-
     retractall( time_taken(_) ),
@@ -240,9 +278,8 @@ init_game :-
     retractall( visited_cells(_) ),
     assert( visited_cells([]) ),
     retractall( arrows(_) ),
-    assert( arrows(1) ),
-    retractall( wumpus_status(_) ),
-    assert( wumpus_status(alive) ),
+    assert( arrows(10) ),
+    forall(wumpus_location(Pos), assert(wumpus_status(Pos, alive))),
     retractall( known_wumpus_location(_) ),
     retractall( gold_status(_) ),
     assert( gold_status(present) ).
@@ -268,29 +305,29 @@ init_agent :-
     assert( agent_location([1,1]) ).
 
 init_wumpus :-
-    retractall( wumpus_location(_) ),
-    assert( wumpus_location([1,3]) ).
+    retractall(wumpus_location(_)),
+    current_input(Input),  % lấy từ `kb.txt` hoặc do UI inject vào
+    read(Input, WumpusList),
+    forall(member(Pos, WumpusList), assert(wumpus_location(Pos))).
 
 %------------------------------------------------------------------------------
 % Perceptors (Sensors)
 
-adj(1,2).
-adj(2,1).
-adj(2,3).
-adj(3,2).
-adj(3,4).
-adj(4,3).
-
 adjacent([X1, Y1], [X2, Y2]) :-
     permitted([X2, Y2]),
-    ( X1 = X2, adj(Y1, Y2)
-    ; Y1 = Y2, adj(X1, X2)
+    ( (X1 =:= X2, abs(Y1 - Y2) =:= 1)
+    ; (Y1 =:= Y2, abs(X1 - X2) =:= 1)
     ).
 
+
+
 isSmelly(Ls1) :-
-    wumpus_status(alive),
-    wumpus_location(Ls2),
-    adjacent(Ls1, Ls2).
+    once((
+        wumpus_location(WL),
+        wumpus_status(WL, alive),
+        adjacent(Ls1, WL)
+    )).
+
 
 isBreezy(Ls1) :-
     pit_location(Ls2),
@@ -490,7 +527,7 @@ ask_KB(VisitedList, Action) :-
     ; known_wumpus_location(WL),
       adjacent(AL, WL),
       arrows(N), N > 0,
-      wumpus_status(alive) ->
+      wumpus_status(WL, alive) ->
         format('I know the Wumpus is at ~p and I\'m adjacent!~n', [WL]),
         Action = shoot(WL)
     ; findall([Pref,L], preferred_move(Pref,VisitedList,L), Moves),
